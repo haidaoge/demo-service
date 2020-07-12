@@ -1,28 +1,41 @@
+<!--
+ * @Description: In User Settings Edit
+ * @Author: your name
+ * @Date: 2019-09-11 17:37:49
+ * @LastEditTime: 2019-09-19 13:40:18
+ * @LastEditors: Please set LastEditors
+ -->
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div id="app" class="full">
+    <transition :name="transitionName">
+        <router-view/>
+    </transition>
   </div>
 </template>
 
-<script>
-import HelloWorld from './components/HelloWorld.vue'
+<style lang="scss">
+@import '~@/assets/style/common.scss';
+</style>
 
+<script>
+import router from './router'
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
+  data() {
+    return {
+      transitionName: ''
+    }
+  },
+  watch: {
+    $route(to, from) {
+      // console.log(to, from)
+      if (to.meta.isslide && from.meta.isslide) {
+        const toDepth = to.path.split('/').length
+        const fromDepth = from.path.split('/').length
+        // console.log(to.path, from.path)
+        this.transitionName = toDepth < fromDepth ? 'slide-right' : 'slide-left'
+      }
+    }
+  },
+  router
 }
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>

@@ -1,0 +1,43 @@
+.lfmarge {
+    margin-left: 30px;
+}
+.content-wrapper{
+    display: flex;
+    justify-content: center;
+    height: calc(100% - 160px);
+    margin-top: 20px;
+    overflow: hidden;
+}
+.jobs-map, .jobs-table-wraper{
+    float: left;
+    width: 50%;
+    overflow: hidden;
+}
+.jobs-table-wraper {
+    position: relative;
+    padding-bottom: 0;
+}
+.jobs-table{
+    height: 100%;
+}
+.pagePos{
+    position: absolute;
+    bottom: 0;
+    background: #fff;
+}
+.jobs-map{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    margin: 10px 10px 10px 0;
+    height: 100%;
+    background: #edf1f5;
+}
+#mapContainer{
+    width: 100%;
+    border-radius: 3px;
+}
+.amap-logo, .amap-copyright{
+    display: none!important;
+}
