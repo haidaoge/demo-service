@@ -12,7 +12,7 @@
         end-placeholder="结束日期"
         :picker-options="pickerOptions">
       </el-date-picker>
-      <el-button class="lfmarge" type="primary" @click="loadJobsData">主要按钮</el-button>
+      <el-button class="lfmarge" type="primary" @click="loadJobsData">查询</el-button>
     </div>
     <div class="content-wrapper">
       <div class="jobs-map">
@@ -34,7 +34,6 @@
             ref="multipleTable"
             height="calc(100% - 40px)"
             :data="tableData.slice((currentPage-1)*pageSize, currentPage*pageSize)"
-            :index="indexMethod"
             tooltip-effect="dark"
             style="width: 100%"
             @select="getTrack"
@@ -84,7 +83,6 @@
 <script>
 import GetWeekDate, {formatDateTime} from '@/utils/date';
 import GPS from '@/utils/gps';
-
 let date = new GetWeekDate();
   export default {
     created() {
@@ -97,11 +95,12 @@ let date = new GetWeekDate();
         starttime: new Date(),
         endtime: new Date(),
         table: ["app"],
-        dates: [new Date(formatDateTime(date.getDayStartDate()-24*3600)), new Date()],
+        dates: [new Date(formatDateTime(date.getDayStartDate()-3*24*3600)), new Date()],
         path: null,
         bpath: null,
         center: null,
         zoom: 18,
+        pageIndex: 1,
         red: '#ff0000',
         green: '00FF7F',
         pickerOptions: {
@@ -141,6 +140,11 @@ let date = new GetWeekDate();
         pageSize: 30,   // 每页的数据条数
         multipleSelection: []
       }
+    },
+    computed: {
+      $map() {
+        return this.$refs.myMap.$map;
+      },
     },
     methods: {
       handleSelectionChange() {
@@ -187,7 +191,8 @@ let date = new GetWeekDate();
         }
         this.path = path;
         this.bpath = bpath;
-        this.center = path[0];
+        // this.center = path[0];
+        this.$map.setCenter(path[0]);
       },
       handleSizeChange(val) {
         console.log(`每页 ${val} 条`);
@@ -199,9 +204,6 @@ let date = new GetWeekDate();
         console.log(`当前页: ${val}`);
         this.currentPage = val;
         console.log(this.tableData.slice((this.currentPage-1)*this.pageSize, this.currentPage*this.pageSize))
-      },
-      indexMethod(index) {
-        return (this.currentPage-1)*this.pageSize+index+1;
       },
       loadJobsData() {
         console.log(this.dates)
