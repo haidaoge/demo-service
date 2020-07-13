@@ -19,11 +19,11 @@
         <amap ref="myMap" :center.sync="center" :zoom.sync="zoom">
           <amap-tile-layer :tile-url="tileUrl" />
           <amap-polyline
-            :path.sync="path"
+            :path="path"
             :stroke-color="red"
             :stroke-weight="4"/>
           <amap-polyline
-            :path.sync="bpath"
+            :path="bpath"
             :stroke-color="green"
             :stroke-weight="4"/>
         </amap>
@@ -36,10 +36,11 @@
             :data="tableData.slice((currentPage-1)*pageSize, currentPage*pageSize)"
             tooltip-effect="dark"
             style="width: 100%"
-            @select="getTrack"
-            @selection-change="handleSelectionChange">
+            @row-click="handleSelectionChange"
+            >
             <el-table-column
-              type="selection"
+            type="index"
+              :reserve-selection="true"
               width="55">
             </el-table-column>
             <el-table-column
@@ -99,7 +100,7 @@ let date = new GetWeekDate();
         path: null,
         bpath: null,
         center: null,
-        zoom: 18,
+        zoom: 16,
         pageIndex: 1,
         red: '#ff0000',
         green: '00FF7F',
@@ -147,12 +148,22 @@ let date = new GetWeekDate();
       },
     },
     methods: {
-      handleSelectionChange() {
-
+      handleSelectionChange(data) {
+        if(data.length == 0) {
+          this.path = null;
+          this.bpath = null;
+          return
+        }
+        // this.multipleSelection = data;
+        this.getTrack(data)
+      },
+      getTbaleKey(d) {
+        // console.log(d.Workid+'-'+d.Droneid)
+        return d.Workid+'-'+d.Droneid;
       },
       // 加载轨迹
       getTrack(data) {
-        let d = data[0],
+        let d = typeof data == "object" ? data : data[0],
             params = {
               workid: d.Workid,
               droneid: d.Droneid,
@@ -191,8 +202,8 @@ let date = new GetWeekDate();
         }
         this.path = path;
         this.bpath = bpath;
-        // this.center = path[0];
-        this.$map.setCenter(path[0]);
+        this.center = path[0];
+        // this.$map.setCenter(path[0]);
       },
       handleSizeChange(val) {
         console.log(`每页 ${val} 条`);
@@ -256,6 +267,6 @@ let date = new GetWeekDate();
       ml2l(row) {
         return (row.Dose / 1000).toFixed(1)
       }
-    }
+    },
   }
 </script>
